@@ -1,6 +1,8 @@
 module github.com/tikkoro/fope
 
-go 1.21.3
+go 1.21.2
+
+toolchain go1.21.3
 
 require (
 	github.com/spf13/cobra v1.7.0
