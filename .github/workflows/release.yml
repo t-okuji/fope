@@ -1,30 +1,31 @@
 name: release
 
 on:
+  pull_request:
   push:
-    tags:
-      - "v*"
+
+permissions:
+  contents: write
 
 jobs:
-  release:
+  goreleaser:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # これがないとリリースを作成できない
     steps:
-      # チェックアウト
-      - uses: actions/checkout@v3
+      -
+        name: Checkout
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Changelog を正しく動作させるために必要
-
-      # Go をセットアップ
-      - uses: actions/setup-go@v3
+          fetch-depth: 0
+      -
+        name: Set up Go
+        uses: actions/setup-go@v4
+      -
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
         with:
-          go-version-file: go.mod
-          cache: true
-
-      # リリース
-      - uses: goreleaser/goreleaser-action@v4
-        with:
-          args: release --rm-dist
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: latest
+          args: release --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 自動で生成されるシークレット
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
